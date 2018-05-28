@@ -35,11 +35,9 @@
 		<dependency>
 			<groupId>com.dscsag</groupId>
 			<artifactId>plm-api</artifactId>
-			<version>5.1.13.0-rc33</version>
-<!--
+			<version>5.1.13.0</version>
 			<scope>system</scope>
 			<systemPath>${ectr.installation.directory}/basis/classes/plm-api.jar</systemPath>
--->
 		</dependency>
 
 
