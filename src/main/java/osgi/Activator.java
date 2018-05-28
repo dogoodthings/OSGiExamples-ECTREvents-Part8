@@ -11,6 +11,8 @@ import org.osgi.service.event.Event;
 import org.osgi.service.event.EventConstants;
 import org.osgi.service.event.EventHandler;
 
+import java.awt.*;
+import java.awt.image.BufferedImage;
 import java.util.Dictionary;
 import java.util.Hashtable;
 
@@ -20,6 +22,9 @@ import java.util.Hashtable;
 public class Activator implements BundleActivator
 {
   private PlmLogger logger;
+
+  private TrayIcon trayIcon;
+
   public void start(BundleContext context) throws Exception
   {
     ECTRService ectrService = getService(context, ECTRService.class);
@@ -32,6 +37,20 @@ public class Activator implements BundleActivator
     Dictionary<String, Object> props = new Hashtable<>();
     props.put(EventConstants.EVENT_TOPIC, topics);
     context.registerService(EventHandler.class.getName(), new EventListener(), props);
+
+    if (SystemTray.isSupported()) {
+      BufferedImage image = new BufferedImage(32, 16, BufferedImage.TYPE_INT_ARGB);
+      Graphics2D x = image.createGraphics();
+      x.setColor(Color.BLUE);
+      x.fillRect(0,0,32,16);
+      trayIcon = new TrayIcon(image,"ECTR Notifications");
+      final SystemTray tray = SystemTray.getSystemTray();
+      tray.add(trayIcon);
+      log("Tray installed...");
+    }
+    else
+      log("Tray is not supported.");
+
   }
 
   @Override
@@ -58,6 +77,9 @@ public class Activator implements BundleActivator
   {
     if (logger != null)
       logger.trace(message);
+    if(trayIcon!=null)
+      trayIcon.displayMessage("ECTR Event",message, TrayIcon.MessageType.INFO);
+
   }
 
   private <T> T getService(BundleContext context, Class<T> clazz) throws Exception
