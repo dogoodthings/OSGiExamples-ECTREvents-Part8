@@ -68,7 +68,8 @@
 				</executions>
 				<configuration>
 					<instructions>
-						<_consumer-policy>$${range;[===,=+)}</_consumer-policy>
+						<_noee>true</_noee>
+						<_consumer-policy>$${range;[==,+)}</_consumer-policy>
 						<Bundle-Activator>${bundle.activator}</Bundle-Activator>
 						<Bundle-SymbolicName>${project.groupId}.${project.artifactId};singleton:=true</Bundle-SymbolicName>
 						<Import-Package>${bundle.import-packages}*</Import-Package>

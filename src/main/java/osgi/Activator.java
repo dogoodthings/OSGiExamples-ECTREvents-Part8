@@ -21,8 +21,10 @@ import java.util.Hashtable;
  */
 public class Activator implements BundleActivator
 {
-  private PlmLogger logger;
+  private static final String OBSERVER_EVENT_OBJECTS_RECEIVED = "plm/observer/notification/event/OBJECTS_RECEIVED";
+  private static final String OBSERVER_PROPERTY_OBJECT_COUNT = "OBJECT_COUNT";
 
+  private PlmLogger logger;
   private TrayIcon trayIcon;
 
   public void start(BundleContext context) throws Exception
@@ -32,7 +34,7 @@ public class Activator implements BundleActivator
       logger = ectrService.getPlmLogger();
 
     String[] topics = {NotificationEventConstants.STARTING, NotificationEventConstants.STARTED,
-            NotificationEventConstants.CONFIGURATION_CHANGED, NotificationEventConstants.BEFORE_SHUTDOWN, NotificationEventConstants.SHUTDOWN};
+            NotificationEventConstants.CONFIGURATION_CHANGED, NotificationEventConstants.BEFORE_SHUTDOWN, NotificationEventConstants.SHUTDOWN, OBSERVER_EVENT_OBJECTS_RECEIVED};
 
     Dictionary<String, Object> props = new Hashtable<>();
     props.put(EventConstants.EVENT_TOPIC, topics);
@@ -69,6 +71,11 @@ public class Activator implements BundleActivator
       {
         Object property = event.getProperty(NotificationEventConstants.CONFIGURATION_CHANGED_PATH);
         log("Configuration path " + property);
+      }
+      else if(OBSERVER_EVENT_OBJECTS_RECEIVED.equals(event.getTopic()))
+      {
+        Object property = event.getProperty(OBSERVER_PROPERTY_OBJECT_COUNT);
+        log("changed object count: " + property);
       }
     }
   }
