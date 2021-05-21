@@ -4,14 +4,14 @@
 
 	<groupId>org.dogoodthings.ectr</groupId>
 	<artifactId>OSGi-Examples-Events-Part8</artifactId>
-	<version>1.0.0</version>
+	<version>1.1.0</version>
 	<packaging>bundle</packaging>
 
 	<properties>
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
 		<maven.compiler.source>1.8</maven.compiler.source>
 		<maven.compiler.target>1.8</maven.compiler.target>
-		<ectr.installation.directory>C:\Program Files (x86)\SAP\ECTR</ectr.installation.directory>
+		<ectr.installation.directory>C:\Users\wt\ECTR-TEST-INSTALLATIONS\SAP-ECTR-51</ectr.installation.directory>
 		<bundle.activator>osgi.Activator</bundle.activator>
 		<bundle.import-packages></bundle.import-packages>
 	</properties>

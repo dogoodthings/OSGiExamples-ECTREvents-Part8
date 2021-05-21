@@ -6,7 +6,6 @@ import com.dscsag.plm.spi.interfaces.logging.PlmLogger;
 import org.osgi.framework.BundleActivator;
 import org.osgi.framework.BundleContext;
 import org.osgi.framework.ServiceReference;
-
 import org.osgi.service.event.Event;
 import org.osgi.service.event.EventConstants;
 import org.osgi.service.event.EventHandler;
@@ -24,6 +23,12 @@ public class Activator implements BundleActivator
   private static final String OBSERVER_EVENT_OBJECTS_RECEIVED = "plm/observer/notification/event/OBJECTS_RECEIVED";
   private static final String OBSERVER_PROPERTY_OBJECT_COUNT = "OBJECT_COUNT";
 
+  //new inbox event in 5.2.5.0+ and 5.1.16.4+
+  private static final String OBSERVER_EVENT_INBOX_CHANGE_DATA_RECEIVED = "plm/observer/notification/event/INBOX_CHANGE_DATA_RECEIVED";
+  private static final String OBSERVER_PROPERTY_WORKITEMS_COUNT = "WORKITEMS_COUNT";
+  private static final String OBSERVER_PROPERTY_MESSAGES_COUNT = "MESSAGES_COUNT";
+  private static final String OBSERVER_PROPERTY_UNREAD_MESSAGES_COUNT = "UNREAD_MESSAGES_COUNT";
+
   private PlmLogger logger;
   private TrayIcon trayIcon;
 
@@ -33,8 +38,12 @@ public class Activator implements BundleActivator
     if(ectrService!=null)
       logger = ectrService.getPlmLogger();
 
-    String[] topics = {NotificationEventConstants.STARTING, NotificationEventConstants.STARTED,
-            NotificationEventConstants.CONFIGURATION_CHANGED, NotificationEventConstants.BEFORE_SHUTDOWN, NotificationEventConstants.SHUTDOWN, OBSERVER_EVENT_OBJECTS_RECEIVED};
+    String[] topics = {
+      NotificationEventConstants.STARTING, NotificationEventConstants.STARTED,
+      NotificationEventConstants.CONFIGURATION_CHANGED, NotificationEventConstants.BEFORE_SHUTDOWN,
+      NotificationEventConstants.SHUTDOWN, OBSERVER_EVENT_OBJECTS_RECEIVED,
+      OBSERVER_EVENT_INBOX_CHANGE_DATA_RECEIVED
+    };
 
     Dictionary<String, Object> props = new Hashtable<>();
     props.put(EventConstants.EVENT_TOPIC, topics);
@@ -52,7 +61,6 @@ public class Activator implements BundleActivator
     }
     else
       log("Tray is not supported.");
-
   }
 
   @Override
@@ -76,6 +84,18 @@ public class Activator implements BundleActivator
       {
         Object property = event.getProperty(OBSERVER_PROPERTY_OBJECT_COUNT);
         log("changed object count: " + property);
+      }
+      else if(OBSERVER_EVENT_OBJECTS_RECEIVED.equals(event.getTopic()))
+      {
+        Object property = event.getProperty(OBSERVER_PROPERTY_OBJECT_COUNT);
+        log("changed object count: " + property);
+      }
+      else if(OBSERVER_EVENT_INBOX_CHANGE_DATA_RECEIVED.equals(event.getTopic()))
+      {
+        Integer workflowCount = (Integer)event.getProperty(OBSERVER_PROPERTY_WORKITEMS_COUNT);
+        Integer messageCount = (Integer)event.getProperty(OBSERVER_PROPERTY_MESSAGES_COUNT);
+        Integer unreadMessageCount = (Integer)event.getProperty(OBSERVER_PROPERTY_UNREAD_MESSAGES_COUNT);
+        log("Inbox: mails: "+messageCount + " unread: "+unreadMessageCount + " workflow items:"+workflowCount);
       }
     }
   }
