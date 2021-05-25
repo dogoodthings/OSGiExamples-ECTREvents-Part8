@@ -12,4 +12,4 @@ Setup project in eclipse:
 9. take the generated jar from target folder: OSGi-Examples-Events-Part8-1.0.0.jar
 10. goto ECTR installation, create a folder(s) OSGi-Examples\basis\plugins inside <ectr_inst_dir>\addons  (mkdir "C:\Program Files (x86)\SAP\ECTR\addons\OSGi-Examples\basis\plugins")
 11. put OSGi-Examples-Events-Part8-1.0.0.jar inside OSGi-Examples\basis\plugins
-12. note - you need at least ECTR version 5.1.13.0 to get the example code to work
+12. note - you need at least ECTR version 5.1.13.0 to get the example code to work (for inbox example 5.2.5.0+ is needed)
