@@ -29,6 +29,10 @@ public class Activator implements BundleActivator
   private static final String OBSERVER_PROPERTY_MESSAGES_COUNT = "MESSAGES_COUNT";
   private static final String OBSERVER_PROPERTY_UNREAD_MESSAGES_COUNT = "UNREAD_MESSAGES_COUNT";
 
+  //new "active ecn changed" events since 5.2.6.0
+  private static final String ECTR_EVENT_ECN_CHANGED = "plm/lifecycle/notification/event/ECN_CHANGED";
+  private static final String ECTR_EVENT_NEW_ECN = "NEW_ECN";
+
   private PlmLogger logger;
   private TrayIcon trayIcon;
 
@@ -42,7 +46,7 @@ public class Activator implements BundleActivator
       NotificationEventConstants.STARTING, NotificationEventConstants.STARTED,
       NotificationEventConstants.CONFIGURATION_CHANGED, NotificationEventConstants.BEFORE_SHUTDOWN,
       NotificationEventConstants.SHUTDOWN, OBSERVER_EVENT_OBJECTS_RECEIVED,
-      OBSERVER_EVENT_INBOX_CHANGE_DATA_RECEIVED
+      OBSERVER_EVENT_INBOX_CHANGE_DATA_RECEIVED,ECTR_EVENT_ECN_CHANGED
     };
 
     Dictionary<String, Object> props = new Hashtable<>();
@@ -85,17 +89,20 @@ public class Activator implements BundleActivator
         Object property = event.getProperty(OBSERVER_PROPERTY_OBJECT_COUNT);
         log("changed object count: " + property);
       }
-      else if(OBSERVER_EVENT_OBJECTS_RECEIVED.equals(event.getTopic()))
-      {
-        Object property = event.getProperty(OBSERVER_PROPERTY_OBJECT_COUNT);
-        log("changed object count: " + property);
-      }
       else if(OBSERVER_EVENT_INBOX_CHANGE_DATA_RECEIVED.equals(event.getTopic()))
       {
         Integer workflowCount = (Integer)event.getProperty(OBSERVER_PROPERTY_WORKITEMS_COUNT);
         Integer messageCount = (Integer)event.getProperty(OBSERVER_PROPERTY_MESSAGES_COUNT);
         Integer unreadMessageCount = (Integer)event.getProperty(OBSERVER_PROPERTY_UNREAD_MESSAGES_COUNT);
         log("Inbox: mails: "+messageCount + " unread: "+unreadMessageCount + " workflow items:"+workflowCount);
+      }
+      else if(ECTR_EVENT_ECN_CHANGED.equals(event.getTopic()))
+      {
+        String newActiveEcn = String.valueOf(event.getProperty(ECTR_EVENT_NEW_ECN));
+        if(newActiveEcn.isEmpty())
+          log("no active ECN set");
+        else
+          log("ECN "+newActiveEcn + " is now active");
       }
     }
   }
